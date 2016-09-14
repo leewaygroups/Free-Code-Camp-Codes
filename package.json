@@ -1,0 +1,19 @@
+{
+  "name": "freecodecamp",
+  "version": "1.0.0",
+  "description": "Free Code Camp campaign",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leewaygroups/Free-Code-Camp-Codes.git"
+  },
+  "author": "Prince O. Onyenike",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leewaygroups/Free-Code-Camp-Codes/issues"
+  },
+  "homepage": "https://github.com/leewaygroups/Free-Code-Camp-Codes#readme"
+}
