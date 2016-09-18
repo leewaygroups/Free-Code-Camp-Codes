@@ -16,11 +16,12 @@ var config = {
     paths: {
       html: './intermediateFrontEndProjects/twitchTv/src/*.html',
       js: './intermediateFrontEndProjects/twitchTv/src/**/*.js',
-      img: './intermediateFrontEndProjects/twitchTv/src/images/*',
+      img: './intermediateFrontEndProjects/twitchTv/src/images/**/*.jpg',
       css: [
+          'intermediateFrontEndProjects/twitchTv/src/css/custom.css',
           'node_modules/bootstrap/dist/css/bootstrap.min.css',
           'node_modules/bootstrap/dist/css/bootstrap-theme.min.css',
-          'node_modules/toastr/toastr.css',
+          'node_modules/toastr/toastr.css'
       ],
       mainJS: './intermediateFrontEndProjects/twitchTv/src/main.js',
       dist: './intermediateFrontEndProjects/twitchTv/dist'
@@ -68,7 +69,8 @@ function twitchGulp (){
     gulp.task('twitchCss', function(){
         gulp.src(config.paths.css)
         .pipe(concat('bundle.css'))
-        .pipe(gulp.dest(config.paths.dist + '/css'));
+        .pipe(gulp.dest(config.paths.dist + '/css'))
+        .pipe(connect.reload());
     });
 
     gulp.task('twitchLint', function(){
@@ -79,6 +81,7 @@ function twitchGulp (){
 
     gulp.task('twitchWatch', function () {
         gulp.watch(config.paths.html, ['twitchHtml']);
+        gulp.watch(config.paths.css, ['twitchCss']);
         gulp.watch(config.paths.js, ['twitchJs', 'twitchLint']);
     });
 }

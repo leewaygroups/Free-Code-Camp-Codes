@@ -1,3 +1,67 @@
+.img-twitch-channel {
+  max-width: 70% !important;
+  border-radius: 20px;
+}
+
+.twitch-channel-caption {
+  text-align: -webkit-center;
+}
+
+.twitch-channel-caption a:link{
+   text-decoration: none;
+    border: 0 none;
+    background: transparent;
+    box-shadow: none;
+    display:block;
+}
+
+.twitch-channel-caption a:visited{
+    color: #777;
+}
+
+.twitch-channel-caption a:hover{
+    color: #aebbea;
+    text-decoration: underline;
+    width: 100%;
+    border-radius: 4px 25px 25px 4px;
+}
+
+.list-group-item-extra {
+  height: 90px !important;
+  padding: 10px 15px;
+}
+
+.twictch-badge {
+  background:  rgba(0, 0, 0, 0.13) !important;
+  padding: 5px !important;
+  margin-top: 16px;
+}
+
+.twictch-online {
+   color: #5cb85c !important;
+}
+.twictch-offline {
+   color: #d9534f !important;
+}
+
+.twictch-item {
+    border-bottom: 1px;
+    border-bottom-style: inset;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    height: auto;
+    border-bottom-color: #dcdcdc;
+    overflow:auto;
+    background: #ffffff;
+    text-align: -webkit-right;
+}
+
+.row-header {
+    border-bottom-width: 1px;
+    border-bottom-style: inset;
+    border-bottom-color: #dcdcdc;
+
+}
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
