@@ -2,7 +2,6 @@
 
 var $ = require('jQuery');
 
-
 var baseUrl = 'https://api.twitch.tv/kraken/streams/';
 var channels = [
     "ESL_SC2",
@@ -12,23 +11,28 @@ var channels = [
     "storbeck",
     "habathcx",
     "RobotCaleb",
-    "noobs2ninjas"
+    "noobs2ninjas",
+    "brunofin",
+    "comster404"
   ];
 var normalise = function(data){
-    if(data.stream === null){
-      data.offline = true;
-    }else if(data.stream === undefined) {
-      data.closed = true;
-    }else {
-      data.online = true;
-    }
-    if(data.stream){
-      data.image = data.stream.channel.logo;
-    }else{
-      data.image = 'https://cdn-images-1.medium.com/max/800/1*V6aVNu8tAqXz7bmsde-RMA.jpeg';
-    }
+  if(data.status !== 404){
+      if(data.stream === null || data.stream === undefined){
+        data.offline = true;
+        data.image = 'https://cdn-images-1.medium.com/max/800/1*V6aVNu8tAqXz7bmsde-RMA.jpeg';
+      }else {
+        data.online = true;
+        data.image = data.stream.channel.logo;
+        data.url = data.stream.channel.url;
+        data.streaming = data.stream.game;
+      }
+      return data;
 
-    return data;
+    }else{
+       data.image = 'https://cdn-images-1.medium.com/max/800/1*V6aVNu8tAqXz7bmsde-RMA.jpeg';
+       data.closed = true;
+       return data;
+    }
 };
 
 var getter = {
@@ -48,11 +52,20 @@ var getter = {
               data = normalise(data);
               result.push(data);
               if(result.length === channels.length){
-                console.log(result);
                 resolve(result);
               }
             },
-            error: function(err) { console.log(err); }
+            error: function(err) {
+              var data = {
+                status: 404
+              };
+              data.name = channel;
+              data = normalise(data);
+              result.push(data);
+              if(result.length === channels.length){
+                resolve(result);
+              }
+            }
           });
         });
     });
