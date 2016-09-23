@@ -18,3 +18,19 @@ String.prototype.split()*/
 
 /**Solution by Prince O. Onyenike */
 
+function pairElement(str) {
+  var pairTable = {
+      A: "T",
+      T: "A",
+      C: "G",
+      G: "C"
+  };
+
+  return str.toUpperCase().split("").map(function(element){
+      return [element, pairTable[element]];
+  });
+}
+
+module.exports = pairElement;
+
+//pairElement("GCG");

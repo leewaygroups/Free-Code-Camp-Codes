@@ -32,4 +32,6 @@ function convertToRoman(number) {
     return result;
 }
 
-convertToRoman(36);
+module.exports = convertToRoman;
+
+//convertToRoman(36);
