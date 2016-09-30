@@ -1,18 +1,3 @@
-/*No repeats please
-Return the number of total permutations of the provided string that don't have repeated consecutive letters. Assume that all characters in the provided string are each unique.
-
-For example, aab should return 2 because it has 6 total permutations (aab, aab, aba, aba, baa, baa), but only 2 of them (aba and aba) don't have the same letter (in this case a) repeating.
-
-Remember to use Read-Search-Ask if you get stuck. Try to pair program. Write your own code.
-
-Here are some helpful links:
-
-Permutations
-RegExp*/
-
-/**Solution by Prince O. Onyenike */
-
-
 function permAlone(str) {
   str = str.split("").sort().join("");
   if(str.length !== 1 && str[0] === str[str.length-1]){return 0;}
@@ -28,6 +13,7 @@ function permAlone(str) {
     }
   }
 
+  //Get array of repeated character set
   var multiXterRepeats = strGroups.filter(function(element){
     return element.length > 1;
   });
@@ -37,13 +23,14 @@ function permAlone(str) {
         prodToAdd *= factorial(multiXterRepeats[j].length);
     }
 
-   //prodToAdd *= factorial(str.length - multiXterRepeats.length);
-   prodToAdd *= factorial(multiXterRepeats.length);
-  }
+   var maxLength  = multiXterRepeats.sort(function (a, b) { return b.length - a.length; })[0].length;
+   if(maxLength == 2){
+         prodToAdd *= factorial(str.length - multiXterRepeats.length);
+   }else{
+       prodToAdd *= factorial(multiXterRepeats.length);
+   }
 
-  // if(prodToAdd > 1){
-  //   prodToAdd *= factorial(strGroups.length);
-  // }
+  }
 
   var result = factorial(str.length) - sumToSubtract;
   if(prodToAdd > 1){
@@ -70,7 +57,6 @@ function factorial(num){
   return num * factorial(num - 1);
 }
 
-var test = permAlone("aaabb") //12
-//var test = permAlone("aab"); // 2
-//var test = permAlone("aabb"); //8
-console.log(test);
+module.exports = permAlone;
+
+//permAlone('aab');
