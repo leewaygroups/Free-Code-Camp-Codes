@@ -28,84 +28,192 @@ parseInt()
 
 
 var months = {
-      "01": "JANUARY",
-      '02': "FEBRYARY",
-      "03": "MARCH",
-      "04": "APRIL",
-      "05": "MAY",
-      "06": "JUNE",
-      "07": "JULY",
-      "08": "AUGUST",
-      "09": "SEPTEMBER",
-      "10": "OCTOBER",
-      '11': "NOVEMBER",
-      '12': "DECEMBER"
+      "01": "January",
+      '02': "February",
+      "03": "March",
+      "04": "April",
+      "05": "May",
+      "06": "June",
+      "07": "July",
+      "08": "August",
+      "09": "September",
+      "10": "October",
+      '11': "November",
+      '12': "December"
   };
 
 function makeFriendlyDates(arr) {
-    var isSameYear = false;
-    var isSameMonth = false;
-    var firstDate = "";
-    var secondDate = "";
-    var result = [];
+  var noBeginingYear;
+  var noEndingMonth;
 
-  var arr = arr.map(function(element){
-      return formartDate(element.split("-"));
-  });
-
-  for(var i=0; i<arr[0].length; i++){
-      if(i === 0 && arr[0][i] === arr[1][i]){
-          isSameYear = true;
-      }else{
-          firstDate += arr[0][i];
-      }
+  //date1 == date2
+  if(arr[0] === arr[1]){
+    arr = arr[0].split("-");
+    var newDate = "";
+    newDate += months[arr[1]] + " " + getOrdinalDay(arr[2]) + ", " + arr[0];
+    return [newDate];
   }
 
+  var dateArr = arr.map(function(element){
+      return element.split("-");
+  });
+
+  var lessThanAYear = lessThanAYearFromBegining(arr);
+  if(dateArr[0][0] === '2016' && lessThanAYear){
+    noBeginingYear = true;
+  }
+
+  if(dateArr[0][0] === dateArr[1][0] && dateArr[0][1] === dateArr[1][1]){
+    noEndingMonth = true;
+  }
+
+  var newBeginingDate = "";
+  newBeginingDate += months[dateArr[0][1]] + " " + getOrdinalDay(dateArr[0][2]);
+  if(!noBeginingYear){
+    newBeginingDate += ", " + dateArr[0][0];
+  }
+
+  var newEndDate = "";
+  if(!noEndingMonth){
+     newEndDate += months[dateArr[1][1]] + " ";
+  }
+  newEndDate += getOrdinalDay(dateArr[1][2]);
+  if(!lessThanAYear){
+    newEndDate += ", " + dateArr[1][0];
+  }
+
+  return [newBeginingDate, newEndDate];
 }
 
-function formartDate(dateArr){
-    var result = [];
-    for(var i=0; i<dateArr.length; i++){
-        if(i === 0){
-            result[2] = dateArr[0];
-        }
-        if(i === 1){
-             result[0] = months[dateArr[i]];
-        }
+function lessThanAYearFromBegining(arr){
+  return  Math.abs((new Date(arr[1]) - new Date(arr[0]))/(1000 * 60 * 60 * 24)) < 365;
+}
 
-        if(i === 2){
-            switch (dateArr[i][dateArr[i].length - 1]) {
-                case '1':
-                    result[1] = dateArr[i] + "st";
-                    break;
+function getOrdinalDay(day){
+  var ordinalDay;
+  switch (day[day.length - 1]) {
+      case '1':
+          ordinalDay = day + "st";
+          break;
 
-                 case '2':
-                    result[1] = dateArr[i] + "nd";
-                    break;
+        case '2':
+          ordinalDay = day + "nd";
+          break;
 
-                 case '3':
-                    result[1] = dateArr[i] + "rd";
-                    break;
+        case '3':
+          if(day === '13'){
+            ordinalDay = day + "th";
+          }else{
+             ordinalDay = day + "rd";
+          }
+          break;
 
-                default:
-                    result[1] = dateArr[i] + "th";
-                    break;
-            }
+      default:
+          ordinalDay = day + "th";
+          break;
+  }
+  if(ordinalDay[0] === '0'){
+      ordinalDay = ordinalDay.substr(1);
+  }
 
-            if(result[1][0] === '0'){
-                result[1] = result[1].substr(1);
-            }
-        }
+  return ordinalDay;
+}
+
+module.exports = makeFriendlyDates;
+
+/**Test cases */
+/*
+var test = makeFriendlyDates(["2016-07-01", "2016-07-04"]); //["July 1st","4th"]
+var test = makeFriendlyDates(["2018-01-13", "2018-01-13"]); //["January 13th, 2018"]
+var test = makeFriendlyDates(["2022-09-05", "2023-09-05"]); //["September 5th, 2022","September 5th, 2023"]
+*/
+
+function makeFriendlyDates(str) {
+
+  var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  // Convert a YYYY-MM-DD string into a date object.
+  function convertDate(str) {
+    // Split the dates to work independently.
+    var dateStr = str.split('-');
+
+    // Force the dates into Universal time to avoid issues due to timezones.
+    return (new Date(Date.UTC(dateStr[0], dateStr[1] - 1, dateStr[2])));
+
+  }
+
+  // Handles the case of the day's endings.
+  function dateEnding(val) {
+    switch (val) {
+      case 1:
+      case 21:
+      case 31:
+        return val + 'st';
+      case 2:
+      case 22:
+        return val + 'nd';
+      case 3:
+      case 23:
+        return val + 'rd';
+      default:
+        return val + 'th';
+    }
+  }
+
+  // Checks for the real difference in months to avoid errors
+  function monthDiff(date1, date2) {
+    var month2 = date2.getUTCFullYear() * 12 + date2.getUTCMonth();
+    var month1 = date1.getUTCFullYear() * 12 + date1.getUTCMonth();
+    return month2 - month1;
+  }
+
+  //day diff
+  function dayDiff(date1, date2) {
+    if(date2.getUTCMonth() === date1.getUTCMonth()){
+      return date1.getUTCDate()-date2.getUTCDate();
+    }
+    return 0;
+  }
+
+  // Get's the right month string.
+  function getMonth(date) {
+    return months[date.getUTCMonth()];
+  }
+
+  function displayDate() {
+
+    // Handles same day
+    if (date2.getTime() - date1.getTime() === 0) {
+      return [getMonth(date1) + ' ' + dateEnding(date1.getUTCDate()) + ', ' + date1.getUTCFullYear()];
     }
 
-    return result;
+    // Handles same month
+    if (date1.getUTCMonth() === date2.getUTCMonth() && date1.getUTCFullYear() === date2.getUTCFullYear()) {
+      return [getMonth(date1) + ' ' + dateEnding(date1.getUTCDate()), dateEnding(date2.getUTCDate())];
+    }
+
+    // Handles more than a month of difference, but less than 12 months and different year
+    if (monthDiff(date1, date2) < 12 && date1.getUTCFullYear() !== date2.getUTCFullYear() ) {
+      return [getMonth(date1) + ' ' + dateEnding(date1.getUTCDate()), getMonth(date2) + ' ' + dateEnding(date2.getUTCDate())];
+    }
+
+    // Handles same month but different year
+    if (monthDiff(date1, date2) <= 12 && dayDiff(date1, date2)>0) {
+      return [getMonth(date1) + ' ' + dateEnding(date1.getUTCDate())+', '+date1.getUTCFullYear(), getMonth(date2) + ' ' + dateEnding(date2.getUTCDate())];
+    }
+
+    // Handles more than a month of difference, but less than 12 months and same year
+    if (monthDiff(date1, date2) < 12) {
+      return [getMonth(date1) + ' ' + dateEnding(date1.getUTCDate())+', '+date1.getUTCFullYear(), getMonth(date2) + ' ' + dateEnding(date2.getUTCDate())];
+    }
+
+    // Handles cases with more than 12 months apart.
+    return [getMonth(date1) + ' ' + dateEnding(date1.getUTCDate()) + ', ' + date1.getUTCFullYear(), getMonth(date2) + ' ' + dateEnding(date2.getUTCDate()) + ', ' + date2.getUTCFullYear()];
+  }
+
+  var date1 = convertDate(str[0]);
+  var date2 = convertDate(str[1]);
+
+  return displayDate();
+
 }
-
-//var test = formartDate('2016-07-01'.split("-"))
-
-makeFriendlyDates(['2016-07-01', '2016-07-04']); //yyyy-mm-dd
-
-
-// ["December 1st, 2016","February 3rd, 2018"].
-// ["March 1st, 2017","May 5th"]
-// ["July 1st","4th"]
