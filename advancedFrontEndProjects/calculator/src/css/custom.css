@@ -1,0 +1,77 @@
+html {
+  background:rgb(221, 221, 221);
+  font-size: 14px;
+  font-family: 'Orbitron', sans-serif;
+
+}
+
+body {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 200;
+}
+
+.calc-panel {
+  margin-top: 150px;
+  border-style: solid;
+  border-color: #ffffff;
+  border-width: thin;
+  border-radius: 5px;
+  background: #ffffff;
+  box-shadow: 0 10px 6px -6px #777;
+}
+
+.calc-display-container {
+  background-color: #c3c2ab;
+  margin-top: 20px;
+  border-radius: 5px;
+  text-align: right;
+  border:  2px solid #b4b39d;
+  padding-right: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 85%;
+}
+
+.history p {
+  margin: 0;
+  padding-top: 20px;
+  padding-right: 4px;
+  color: #8b8b7b;
+}
+
+.entry p {
+  margin: 1px;
+  height: 20px;
+  font-size: 35px;
+  font-weight: 300;
+  line-height: 35px;
+  padding-top: 5px
+}
+
+button {
+  border-radius: 8px;
+  border: none;
+  background-color: #3a3a3a;
+  margin: 0 4px 10px 8px;
+  height: 40px;
+  width: 50px;
+  box-shadow: 0px 3px 0px 0px #222121, inset -1px -3px 10px 1px #515151;
+}
+
+button, button:hover, button:active, button:visited {
+  text-decoration: none !important;
+  outline: none !important;
+}
+
+.buttons {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  position: absolute;
+  display: inline-block;
+  width: 280px;
+  height: auto;
+  margin-top: 15px;
+  /*margin-left: 15px;*/
+}
+

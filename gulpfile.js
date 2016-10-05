@@ -1,6 +1,7 @@
 "use strict";
 
 var gulpTwitch = require('./gulpTwitch');
+var gulpCalculator = require('./gulpCalculator');
 var gulp = require('gulp');
 /*
 var connect = require('gulp-connect'); //Runs local dev server
@@ -14,5 +15,10 @@ var eslint =require('gulp-eslint'); //Lint JS files, including JSX*/
 
 /**config object */
 
+console.info('..................TwitchTV Project...................');
 gulpTwitch();
 gulp.task('twitch', ['twitchCss', 'twitchHtml', 'twitchJs', 'twitchLint', 'twitchOpen', 'twitchWatch']);
+
+console.info('..................Calculator Project...................');
+gulpCalculator();
+gulp.task('calculator', ['calculatorCss', 'calculatorHtml', 'calculatorJs', 'calculatorLint', 'calculatorOpen', 'calculatorWatch'])
