@@ -25,11 +25,14 @@ body {
 .calc-panel {
   margin-top: 150px;
   border-style: solid;
-  border-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
   border-width: thin;
-  border-radius: 5px;
+  border-radius: 20px;
   background: #ffffff;
-  box-shadow: 0 10px 6px -6px #777;
+  /*box-shadow: 0 10px 6px -6px #777;*/
+  height: 410px;
+  padding-top: 25px;
+  box-shadow: 7px 10px 34px 1px rgba(0, 0, 0, 0.68), inset -1px -6px 12px 0.1px #89847e;
 }
 
 .calc-display-container {
@@ -64,10 +67,15 @@ button {
   border-radius: 8px;
   border: none;
   background-color: #3a3a3a;
-  margin: 0 4px 10px 8px;
+  margin: 0 9px 10px 8px;
   height: 40px;
   width: 50px;
   box-shadow: 0px 3px 0px 0px #222121, inset -1px -3px 10px 1px #515151;
+}
+
+button:active {
+  transform: translate(0px, 3px);
+  box-shadow: none;
 }
 
 button, button:hover, button:active, button:visited {
@@ -84,6 +92,22 @@ button, button:hover, button:active, button:visited {
   width: 280px;
   height: auto;
   margin-top: 15px;
-  /*margin-left: 15px;*/
+  margin-left: 20px;
+  margin-right: auto;
+}
+
+.red {
+    font-size: 14px;
+    background-color: #a72d45;
+    box-shadow: 0px 3px 0px 0px #671c2a;
+}
+
+.equalButton {
+    position: absolute;
+    height: 90px;
+}
+
+.zeroButton {
+    width: 117px;
 }
 

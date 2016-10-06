@@ -9,7 +9,7 @@ var CalculatorPanel = React.createClass({
   render: function(){
     return (
       <div className=" container-fluid col-md-12">
-            <div className="row col-md-4 col-md-offset-4">
+            <div className="row col-md-3 col-md-offset-4">
               <div className="calc-panel">
                 <CalculatorDisplay />
                 <CalculatorKeyboard />
