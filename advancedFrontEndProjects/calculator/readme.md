@@ -6,7 +6,7 @@
 
 -- User Story: I can keep chaining mathematical operations together until I hit the equal button, and the calculator will tell me the correct output.
 
-#Build Directive
+#Build Directives
 
 -- Git clone or download this repo.
 
