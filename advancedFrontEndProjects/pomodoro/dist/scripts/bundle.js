@@ -6,8 +6,15 @@ var React = require('react');
 var PomodoroDisplay = React.createClass({displayName: "PomodoroDisplay",
   render: function () {
     return (
-      React.createElement("div", null, 
-        "Display Pomodoro"
+      React.createElement("div", {className: "col-xs-12"}, 
+        React.createElement("div", {className: "time-container"}, 
+          React.createElement("div", {className: "minutes"}, 
+            React.createElement("span", {id: "minutes", className: "col-xs-6 minutes"}, "00")
+          ), 
+          React.createElement("div", {className: "seconds", className: "col-xs-6"}, 
+            React.createElement("span", {id: "seconds"}, "00")
+          )
+        )
       )
     );
   }
@@ -21,10 +28,42 @@ module.exports = PomodoroDisplay;
 var React = require('react');
 
 var PomodoroSettings = React.createClass({displayName: "PomodoroSettings",
+
+  propTypes: {
+    increament: React.PropTypes.func.isRequired,
+    decreament: React.PropTypes.func.isRequired,
+    time: React.PropTypes.object.isRequired,
+    breakDuration: React.PropTypes.number.isRequired,
+    sessionDuration: React.PropTypes.number.isRequired
+  },
+
   render: function () {
     return (
-      React.createElement("div", null, 
-         "Pomodoro Settings"
+      React.createElement("div", {className: "col-xs-12"}, 
+        React.createElement("div", {className: "col-xs-12 settings-container"}, 
+          React.createElement("div", {className: "col-xs-6 session-settings"}, 
+            React.createElement("div", {key: "session-inc", className: "settings-button", 
+              onClick: this.props.increament.bind(null, "session")}, 
+              React.createElement("i", {className: "fa fa-plus", "aria-hidden": "true"})
+            ), 
+            React.createElement("div", {className: "settings-Value"}, React.createElement("p", null, this.props.sessionDuration)), 
+            React.createElement("div", {key: "session-dec", className: "settings-button", 
+              onClick: this.props.decreament.bind(null, "session")}, 
+              React.createElement("i", {className: "fa fa-minus", "aria-hidden": "true"})
+            )
+          ), 
+          React.createElement("div", {className: "col-xs-6 break-settings"}, 
+            React.createElement("div", {key: "break-inc", className: "settings-button", 
+              onClick: this.props.increament.bind(null, "break")}, 
+              React.createElement("i", {className: "fa fa-plus", "aria-hidden": "true"})
+            ), 
+            React.createElement("div", {key: "session-dec", className: "settings-Value"}, React.createElement("p", null, this.props.breakDuration)), 
+            React.createElement("div", {className: "settings-button", 
+              onClick: this.props.decreament.bind(null, "break")}, 
+              React.createElement("i", {className: "fa fa-minus", "aria-hidden": "true"})
+            )
+          )
+        )
       )
     );
   }
@@ -41,13 +80,96 @@ var PomodoroSettings = require('./pomodoroSettings-react.js');
 var _ = require('lodash');
 
 var PomodoroPanel = React.createClass({displayName: "PomodoroPanel",
+  increament: function(target){
+    if(target === "session"){
+      this.setState({
+        sessionDuration: ++this.state.sessionDuration
+      });
+    }
+
+    if(target === "break"){
+       this.setState({
+        breakDuration: ++this.state.breakDuration
+      });
+    }
+  },
+
+  decreament: function(target){
+    if(target === "session"){
+      this.setState({
+        sessionDuration: this.state.sessionDuration > 1 ? --this.state.sessionDuration : 1
+      });
+    }
+
+    if(target === "break"){
+       this.setState({
+        breakDuration: this.state.breakDuration > 1 ? --this.state.breakDuration : 1
+      });
+    }
+  },
+
+  pomodoro: function(){
+
+    /**Update pomodoro state */
+      switch (this.state.pomodoroState.name) {
+        case "OFF":
+          this.setState({
+            pomodoroState: {
+              name: "ON",
+              label: "Stop"
+            }
+          });
+          break;
+
+        default:
+        this.setState({
+          pomodoroState: {
+            name: "OFF",
+            label: "Start"
+          }
+        });
+        break;
+      }
+  },
+
+  getInitialState: function(){
+      return {
+        time: {
+          min: 25,
+          sec: 0
+        },
+        sessionDuration: 25,
+        breakDuration: 5,
+        pomodoroState: {
+          name: "OFF",
+          label: "Start"
+        }
+      };
+    },
 
   render: function(){
     return (
-      React.createElement("div", {className: " container-fluid col-md-12"}, 
-        React.createElement("div", null, React.createElement("h1", null, "Pomodoro Header")), 
-        React.createElement(PomodoroDisplay, null), 
-        React.createElement(PomodoroSettings, null)
+      React.createElement("div", {className: "container-fluid col-md-12"}, 
+        React.createElement("div", {className: "col-md-4 col-md-offset-4"}, 
+          React.createElement("div", {className: "pomo-panel"}, 
+            React.createElement("div", {className: "col-xs-12 pomodoro-header"}, 
+              React.createElement("h1", null, "Pomodoro")
+            ), 
+            React.createElement(PomodoroDisplay, null), 
+            React.createElement(PomodoroSettings, {
+                increament: this.increament, 
+                decreament: this.decreament, 
+                time: this.state.time, 
+                breakDuration: this.state.breakDuration, 
+                sessionDuration: this.state.sessionDuration}), 
+            React.createElement("div", {className: "col-xs-12"}, 
+              React.createElement("div", {className: "col-xs-6 col-xs-offset-3"}, 
+                 React.createElement("button", {
+                 className: "button-start-stop", onClick: this.pomodoro}, this.state.pomodoroState.label)
+              )
+            )
+          )
+        )
       )
     );
   }
