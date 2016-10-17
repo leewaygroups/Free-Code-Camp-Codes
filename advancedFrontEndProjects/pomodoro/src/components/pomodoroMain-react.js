@@ -45,17 +45,68 @@ var PomodoroPanel = React.createClass({
               label: "Stop"
             }
           });
+          this.countdown();
           break;
 
         default:
+        clearInterval(this.timer);
         this.setState({
           pomodoroState: {
             name: "OFF",
             label: "Start"
-          }
+          },
+          pomodoroMinutes: "00",
+          pomodoroSeconds: "00"
         });
         break;
       }
+
+      //this.countdown();
+  },
+
+  checkNextCountDown: function(){
+    if(this.state.sessionDuration && this.state.breakDuration){
+       this.countdown();
+    }else{
+      this.setState({
+         pomodoroState: {
+          name: "OFF",
+          label: "Start"
+        },
+        pomodoroMinutes: "00",
+        pomodoroSeconds: "00"
+      });
+    }
+  },
+
+  countdown: function(){
+    var min = this.state.sessionDuration;
+    var sec = 0;
+    var setState = this.setState.bind(this);
+    var checkNextCountDown = this.checkNextCountDown.bind(null);
+    var breakDuration = this.state.breakDuration;
+
+    function pad(val) {
+        return val > 9 ? val : "0" + val;
+    }
+
+    var timer = this.timer = setInterval(function () {
+        if(min > 0 && sec === 0){
+          min -= 1;
+          sec = 60;
+        }else if(sec > 0){
+          sec -= 1;
+        }else {
+           clearInterval(timer);
+            setTimeout(function () {
+                checkNextCountDown();
+            }, breakDuration * 60 * 1000);
+        }
+        setState({
+          pomodoroMinutes: pad(min),
+          pomodoroSeconds: pad(sec)
+        });
+    }, 1000);
   },
 
   getInitialState: function(){
@@ -69,7 +120,9 @@ var PomodoroPanel = React.createClass({
         pomodoroState: {
           name: "OFF",
           label: "Start"
-        }
+        },
+        pomodoroMinutes: "00",
+        pomodoroSeconds: "00"
       };
     },
 
@@ -81,7 +134,7 @@ var PomodoroPanel = React.createClass({
             <div className="col-xs-12 pomodoro-header">
               <h1>Pomodoro</h1>
             </div>
-            <PomodoroDisplay />
+            <PomodoroDisplay minutes={this.state.pomodoroMinutes} seconds={this.state.pomodoroSeconds} />
             <PomodoroSettings
                 increament={this.increament}
                 decreament={this.decreament}

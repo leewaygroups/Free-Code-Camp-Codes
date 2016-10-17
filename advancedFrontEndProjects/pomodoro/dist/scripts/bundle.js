@@ -4,15 +4,20 @@
 var React = require('react');
 
 var PomodoroDisplay = React.createClass({displayName: "PomodoroDisplay",
+  propTypes: {
+    minutes: React.PropTypes.string.isRequired,
+    seconds: React.PropTypes.string.isRequired
+  },
+
   render: function () {
     return (
       React.createElement("div", {className: "col-xs-12"}, 
         React.createElement("div", {className: "time-container"}, 
           React.createElement("div", {className: "minutes"}, 
-            React.createElement("span", {id: "minutes", className: "col-xs-6 minutes"}, "00")
+            React.createElement("span", {id: "minutes", className: "col-xs-6 minutes"}, this.props.minutes)
           ), 
           React.createElement("div", {className: "seconds", className: "col-xs-6"}, 
-            React.createElement("span", {id: "seconds"}, "00")
+            React.createElement("span", {id: "seconds"}, this.props.seconds)
           )
         )
       )
@@ -119,17 +124,68 @@ var PomodoroPanel = React.createClass({displayName: "PomodoroPanel",
               label: "Stop"
             }
           });
+          this.countdown();
           break;
 
         default:
+        clearInterval(this.timer);
         this.setState({
           pomodoroState: {
             name: "OFF",
             label: "Start"
-          }
+          },
+          pomodoroMinutes: "00",
+          pomodoroSeconds: "00"
         });
         break;
       }
+
+      //this.countdown();
+  },
+
+  checkNextCountDown: function(){
+    if(this.state.sessionDuration && this.state.breakDuration){
+       this.countdown();
+    }else{
+      this.setState({
+         pomodoroState: {
+          name: "OFF",
+          label: "Start"
+        },
+        pomodoroMinutes: "00",
+        pomodoroSeconds: "00"
+      });
+    }
+  },
+
+  countdown: function(){
+    var min = this.state.sessionDuration;
+    var sec = 0;
+    var setState = this.setState.bind(this);
+    var checkNextCountDown = this.checkNextCountDown.bind(null);
+    var breakDuration = this.state.breakDuration;
+
+    function pad(val) {
+        return val > 9 ? val : "0" + val;
+    }
+
+    var timer = this.timer = setInterval(function () {
+        if(min > 0 && sec === 0){
+          min -= 1;
+          sec = 60;
+        }else if(sec > 0){
+          sec -= 1;
+        }else {
+           clearInterval(timer);
+            setTimeout(function () {
+                checkNextCountDown();
+            }, breakDuration * 60 * 1000);
+        }
+        setState({
+          pomodoroMinutes: pad(min),
+          pomodoroSeconds: pad(sec)
+        });
+    }, 1000);
   },
 
   getInitialState: function(){
@@ -143,7 +199,9 @@ var PomodoroPanel = React.createClass({displayName: "PomodoroPanel",
         pomodoroState: {
           name: "OFF",
           label: "Start"
-        }
+        },
+        pomodoroMinutes: "00",
+        pomodoroSeconds: "00"
       };
     },
 
@@ -155,7 +213,7 @@ var PomodoroPanel = React.createClass({displayName: "PomodoroPanel",
             React.createElement("div", {className: "col-xs-12 pomodoro-header"}, 
               React.createElement("h1", null, "Pomodoro")
             ), 
-            React.createElement(PomodoroDisplay, null), 
+            React.createElement(PomodoroDisplay, {minutes: this.state.pomodoroMinutes, seconds: this.state.pomodoroSeconds}), 
             React.createElement(PomodoroSettings, {
                 increament: this.increament, 
                 decreament: this.decreament, 
