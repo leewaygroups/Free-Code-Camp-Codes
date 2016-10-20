@@ -1,0 +1,20 @@
+body {
+  background:rgb(221, 221, 221);
+  font-size: 14px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 200;
+}
+
+.tictac-main {
+  margin-top: 150px;
+  background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  position: static;
+}
+
+.col-bar {
+  border-style: solid;
+  border-width: thin;
+  height: 300px;
+  width: 100px;
+}
