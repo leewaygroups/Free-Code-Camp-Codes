@@ -4,6 +4,7 @@ var gulpTwitch = require('./gulpTwitch');
 var gulpCalculator = require('./gulpCalculator');
 var gulpPomodoro = require('./gulpPomodoro');
 var gulpTicTac = require('./gulpTicTac');
+var gulpJobs = require('./gulpJobs');
 var gulp = require('gulp');
 /*
 var connect = require('gulp-connect'); //Runs local dev server
@@ -32,3 +33,7 @@ gulp.task('pomodoro', ['pomodoroCss', 'pomodoroHtml', 'pomodoroJs', 'pomodoroLin
 console.info('..................TicTacToe Project...................');
 gulpTicTac();
 gulp.task('tictac', ['tictacCss', 'tictacHtml', 'tictacJs', 'tictacLint', 'tictacOpen', 'tictacWatch']);
+
+console.info('..................Jobs Project...................');
+gulpJobs();
+gulp.task('jobs', ['jobsCss', 'jobsHtml', 'jobsJs', 'jobsLint', 'jobsOpen', 'jobsWatch']);
