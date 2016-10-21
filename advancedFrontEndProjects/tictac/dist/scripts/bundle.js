@@ -7,20 +7,29 @@ var React = require('react');
 var _ = require('lodash');
 
 var TictacPanel = React.createClass({displayName: "TictacPanel",
+  onPlayerPlay: function(key){
+    console.info(key);
+  },
 
   render: function(){
     return (
       React.createElement("div", {className: "container-fluid col-md-12"}, 
         React.createElement("div", {className: "tictac-main"}, 
-          React.createElement("div", {className: "col-md-6 col-md-offset-4"}, 
+          React.createElement("div", {className: "tictac-main-container col-md-6 col-md-offset-4"}, 
             React.createElement("div", {className: "col-md-2 col-bar"}, 
-            "P1"
+              React.createElement("div", {className: "cell-box", key: "11", onClick: this.onPlayerPlay.bind(null, '11')}, React.createElement("p", null, "A1")), 
+              React.createElement("div", {className: "cell-box", key: "21", onClick: this.onPlayerPlay.bind(null, '21')}, React.createElement("p", null, "A2")), 
+              React.createElement("div", {className: "cell-box", key: "31", onClick: this.onPlayerPlay.bind(null, '31')}, React.createElement("p", null, "A3"))
             ), 
             React.createElement("div", {className: "col-md-2 col-bar"}, 
-            "P2"
+              React.createElement("div", {className: "cell-box", key: "12", onClick: this.onPlayerPlay.bind(null, '12')}, React.createElement("p", null, "B1")), 
+              React.createElement("div", {className: "cell-box", key: "22", onClick: this.onPlayerPlay.bind(null, '22')}, React.createElement("p", null, "B2")), 
+              React.createElement("div", {className: "cell-box", key: "32", onClick: this.onPlayerPlay.bind(null, '32')}, React.createElement("p", null, "B3"))
             ), 
             React.createElement("div", {className: "col-md-2 col-bar"}, 
-            "P3"
+              React.createElement("div", {className: "cell-box", key: "13", onClick: this.onPlayerPlay.bind(null, '13')}, React.createElement("p", null, "C1")), 
+              React.createElement("div", {className: "cell-box", key: "23", onClick: this.onPlayerPlay.bind(null, '23')}, React.createElement("p", null, "C2")), 
+              React.createElement("div", {className: "cell-box", key: "33", onClick: this.onPlayerPlay.bind(null, '33')}, React.createElement("p", null, "C3"))
             )
           )
         )
