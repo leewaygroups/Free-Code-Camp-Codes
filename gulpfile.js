@@ -18,22 +18,17 @@ var eslint =require('gulp-eslint'); //Lint JS files, including JSX*/
 
 /**config object */
 
-console.info('..................TwitchTV Project...................');
 gulpTwitch();
 gulp.task('twitch', ['twitchCss', 'twitchHtml', 'twitchJs', 'twitchLint', 'twitchOpen', 'twitchWatch']);
 
-console.info('..................Calculator Project...................');
 gulpCalculator();
 gulp.task('calculator', ['calculatorCss', 'calculatorHtml', 'calculatorJs', 'calculatorLint', 'calculatorOpen', 'calculatorWatch'])
 
-console.info('..................Pomodoro Project...................');
 gulpPomodoro();
 gulp.task('pomodoro', ['pomodoroCss', 'pomodoroHtml', 'pomodoroJs', 'pomodoroLint', 'pomodoroOpen', 'pomodoroWatch']);
 
-console.info('..................TicTacToe Project...................');
 gulpTicTac();
 gulp.task('tictac', ['tictacCss', 'tictacHtml', 'tictacJs', 'tictacLint', 'tictacOpen', 'tictacWatch']);
 
-console.info('..................Jobs Project...................');
 gulpJobs();
-gulp.task('jobs', ['jobsCss', 'jobsHtml', 'jobsJs', 'jobsLint', 'jobsOpen', 'jobsWatch']);
+gulp.task('jobs', ['jobsCss', 'jobsImages', 'jobsHtml', 'jobsJs', 'jobsLint', 'jobsOpen', 'jobsWatch']);

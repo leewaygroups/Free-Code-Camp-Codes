@@ -28,6 +28,8 @@ var config = {
 }
 
 function tictacGulp (){
+  console.info('..................TicTacToe Project...................');
+
     /**Start a local development server */
     gulp.task('connect', function () {
         connect.server({

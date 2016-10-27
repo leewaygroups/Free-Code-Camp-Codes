@@ -1,0 +1,39 @@
+/*Big tablet to 1200px (widths smaller than 1140px row)*/
+@media only screen and (max-width: 1200px){
+    .hero-text-box {
+        position: absolute;
+        width: 100%;
+        padding: 0 2%;    
+    }
+}
+
+/*Small tablet to big tablet: from 768px to 1023px */
+@media only screen and (max-width: 1023px){
+    body { font-size: 18px;}
+    section { padding: 30px 4%;}
+    .vacancy-subscription-form {
+        width: 80%;
+    }
+}
+
+
+/*Small phone to small tablet: from 481px to 767px */
+@media only screen and (max-width: 767px){
+    body {font-size: 16px}
+
+    .hero-text-box { padding: 0 4%; }
+
+    .main-nav {display: none;}
+
+    h1 { font-size: 180%; }
+
+     h2 { font-size: 130%; }
+}
+
+
+/*Small phones: from 0 to 480px */
+@media only screen and (max-width: 480px){
+    .hero-text-box .cbtn {
+        margin-bottom: 30px; 
+    } 
+}

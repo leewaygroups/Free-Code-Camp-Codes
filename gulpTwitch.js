@@ -29,6 +29,7 @@ var config = {
 }
 
 function twitchGulp (){
+  console.info('..................TwitchTV Project...................');
     /**Start a local development server */
     gulp.task('connect', function () {
         connect.server({

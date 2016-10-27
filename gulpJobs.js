@@ -4,7 +4,8 @@ var gulp = require('gulp');
 var connect = require('gulp-connect'); //Runs local dev server
 var open = require('gulp-open'); // Opens a URL in a web browser
 var browserify = require('browserify'); //Bundles JS
-var reactify = require('reactify'); //Transforms React JSX to JS
+// var reactify = require('reactify'); //Transforms React JSX to JS
+var babelify = require('babelify'); //Transforms React JSX to JS
 var source = require('vinyl-source-stream'); // Use conventional text stream with Gulp
 var concat = require('gulp-concat'); //concatenate files
 var eslint =require('gulp-eslint'); //Lint JS files, including JSX
@@ -16,11 +17,15 @@ var config = {
     paths: {
       html: './jobs/src/*.html',
       js: './jobs/src/**/*.js',
+      img: [
+        'jobs/src/css/images/*'
+      ],
       css: [
           'node_modules/bootstrap/dist/css/bootstrap.min.css',
           'node_modules/bootstrap/dist/css/bootstrap-theme.min.css',
           'node_modules/toastr/toastr.css',
-          'jobs/src/css/custom.css'
+          'jobs/src/css/custom.css',
+          'jobs/src/css/queries.css'
       ],
       mainJS: './jobs/src/main.js',
       dist: './jobs/dist'
@@ -28,6 +33,8 @@ var config = {
 }
 
 function jobsGulp (){
+  console.info('..................Jobs Project...................');
+
     /**Start a local development server */
     gulp.task('connect', function () {
         connect.server({
@@ -51,7 +58,7 @@ function jobsGulp (){
 
     gulp.task('jobsJs', function () {
         browserify(config.paths.mainJS)
-            .transform(reactify)
+            .transform(babelify, {presets: ["es2015", "react"]})
             .bundle()
             .on('error', console.error.bind(console))
             .pipe(source('bundle.js'))
@@ -66,6 +73,12 @@ function jobsGulp (){
         .pipe(connect.reload());
     });
 
+     gulp.task('jobsImages', function(){
+      gulp.src(config.paths.img)
+      .pipe(gulp.dest(config.paths.dist + '/images'))
+      .pipe(connect.reload());
+    })
+
     gulp.task('jobsLint', function(){
         return gulp.src(config.paths.js)
         .pipe(eslint({config: 'eslint.config.json'}))
@@ -75,6 +88,7 @@ function jobsGulp (){
     gulp.task('jobsWatch', function () {
         gulp.watch(config.paths.html, ['jobsHtml']);
         gulp.watch(config.paths.css, ['jobsCss']);
+        gulp.watch(config.paths.img, ['jobsImages']);
         gulp.watch(config.paths.js, ['jobsJs', 'jobsLint']);
     });
 }

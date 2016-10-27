@@ -28,6 +28,8 @@ var config = {
 }
 
 function calculatorGulp (){
+  console.info('..................Calculator Project...................');
+
     /**Start a local development server */
     gulp.task('connect', function () {
         connect.server({

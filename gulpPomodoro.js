@@ -28,6 +28,8 @@ var config = {
 }
 
 function pomodoroGulp (){
+  console.info('..................Pomodoro Project...................');
+
     /**Start a local development server */
     gulp.task('connect', function () {
         connect.server({
