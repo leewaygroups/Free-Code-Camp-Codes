@@ -2,30 +2,32 @@
 
 var $ = require('./vendors/jquery.waypoints.js');
 
-var UtilService = function(){
-    $(document).ready(function(){
-        
-        $('.js--vacancy-class').waypoint(function(direction){
-           if(direction === "down" ){
-               $('nav').addClass('sticky');
-           }else{
-               $('nav').removeClass('sticky');
-           }
-        }, {offset: '2%'}); 
+var UtilService = {
+      toggleNavigationToDynamic: function(){
+        $(document).ready(function(){
+          $('.js--vacancy-class').waypoint(function(direction){
+            if(direction === "down" ){
+                $('nav').addClass('sticky');
+            }else{
+                $('nav').removeClass('sticky');
+            }
+          }, {offset: '2%'});
 
-    });
+      });
+    },
+
+    toggleNavigationToFixed: function(){
+       $('nav').removeClass('sticky');
+       $("header").css('background-image', 'none');
+    }
+
 };
 
-// <Header />
+module.exports = UtilService;
+
+// <HomeBanner />
 // <VacancyClass />
 // <WorkWithUs />
 // <VacanciesSection />
 // <VoicesFromTheField />
 // <VacancySubcription />
-// <Footer />
-
-
-// <DefaultRoute handler={Home}></DefaultRoute>
-// <NotFoundRoute name="notfound" handler={NotFound} />
-
-module.exports = UtilService;

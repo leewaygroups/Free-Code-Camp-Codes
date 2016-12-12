@@ -1,7 +1,9 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
+
 var TictacPanel = require('./components/tictacMain-react.js');
 
 
-React.render(<TictacPanel />, document.getElementById('app'));
+ReactDOM.render(<TictacPanel />, document.getElementById('app'));

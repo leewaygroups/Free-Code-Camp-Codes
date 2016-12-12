@@ -27,8 +27,8 @@ gulp.task('calculator', ['calculatorCss', 'calculatorHtml', 'calculatorJs', 'cal
 gulpPomodoro();
 gulp.task('pomodoro', ['pomodoroCss', 'pomodoroHtml', 'pomodoroJs', 'pomodoroLint', 'pomodoroOpen', 'pomodoroWatch']);
 
-gulpTicTac();
-gulp.task('tictac', ['tictacCss', 'tictacHtml', 'tictacJs', 'tictacLint', 'tictacOpen', 'tictacWatch']);
-
 gulpJobs();
 gulp.task('jobs', ['jobsCss', 'jobsImages', 'jobsHtml', 'jobsJs', 'jobsLint', 'jobsOpen', 'jobsWatch']);
+
+gulpTicTac();
+gulp.task('tictac', ['tictacCss', 'tictacHtml', 'tictacJs', 'tictacLint', 'tictacOpen', 'tictacWatch']);

@@ -10,7 +10,7 @@ var Header = React.createClass({
               <div className="row">
                   <MainNav />
                   <HeaderBackground />
-                </div>
+              </div>
             </header>
         );
     }

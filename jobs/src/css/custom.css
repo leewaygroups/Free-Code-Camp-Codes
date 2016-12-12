@@ -280,7 +280,7 @@ section {
 }
 
 /*vacancies Section */
-.section-vacancies {
+.section-vacancies, .section-no-padding {
   padding: 0;
 }
 

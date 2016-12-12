@@ -9,6 +9,7 @@ var Route = ReactRouter.Route;
 var routes = require('./routes.js');
 var app = document.getElementById('app');
 
-require('./utils/scripts.js')();
+// var UtilService = require('./utils/scripts.js');
+// UtilService.toggleNavigationToDynamic();
 
 ReactDOM.render(routes, app);
