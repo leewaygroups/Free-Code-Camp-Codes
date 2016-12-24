@@ -20,6 +20,9 @@ var TictacPanel = React.createClass({
           }
         });
       }
+
+      //using " game.on = this.state.gameInfo.gameOn" makes the setplayer function lag
+      //by requiring double click to make player choice. TODO: Find out why.
       game.on = true;
   },
 
@@ -34,7 +37,7 @@ var TictacPanel = React.createClass({
       <div className="container-fluid col-md-12" ref="infoBoard">
         <div ref="choices">
           <div className="col-md-4">
-              Would you like to play as <b>X</b> or <b>X</b> ?
+              Who would you like to play as <b>Player X</b> or <b>Player O</b> ?
           </div>
           <div className="col-md-8">
             <a className="btn btn-info col-md-2" onClick={this.makePlayerChoice.bind(null, 'X')}><b>X</b></a>
@@ -51,13 +54,22 @@ var TictacPanel = React.createClass({
      var move = game.play(game.playerMe, indexOfChoice);
      this.refs[move].children[0].innerHTML = game.playerMe.name;
 
-     /**Process game outcome */
+     /**Opponent react to my move*/
      if(!game.isOver){
-       var optimalMoveIndex = game.minimax();
-       move = game.play(game.opponent, optimalMoveIndex);
-       this.refs[move].children[0].innerHTML = game.opponent.name;
+      this.opponentPlay();
+     }else{
+       //my last move ended the game.
+       //TODO: handle gameOver.
      }
    }
+  },
+
+  opponentPlay: function(){
+    game.activeTurn = game.opponent;
+    game.nextTurn = game.playerMe;
+    var optimalMoveIndex = game.getOptimalMoveIndex( game.activeTurn, 'max');
+    var move = game.play(game.opponent, optimalMoveIndex);
+    this.refs[move].children[0].innerHTML = game.opponent.name;
   },
 
   getInitialState: function(){
