@@ -14,10 +14,8 @@ var TictacPanel = React.createClass({
       if(!game.on){
         game.setPlayers(choiceName);
         this.setState({
-          gameInfo: {
             gameOn: true,
             playerMe: game.playerMe
-          }
         });
       }
 
@@ -29,7 +27,7 @@ var TictacPanel = React.createClass({
   playerChoices: function(){
     if(game.on){
        <div className="col-md-4">
-            The fight is on! You're <b>{this.state.gameInfo.playerMe.name}</b>
+            The fight is on! You're <b>{this.state.playerMe.name}</b>
         </div>
     }
 
@@ -48,18 +46,71 @@ var TictacPanel = React.createClass({
     );
   },
 
+  gameWonBanner: function(){
+    if(this.state.gameOver){
+      if(this.state.winner.player){
+        return (
+          <div>Game over: Winner is <b>{this.state.winner.player.name}</b></div>
+        );
+      }else{
+          <div>Game over: Its a draw</div>
+      }
+    }
+  },
+
+  updateGameStatus: function () {
+    !game.isWin(game.playerMe) ? game.isWin(game.opponent) : null;
+    if(game.winner){
+     game.isOver = true;
+     this.setState({
+        gameOn: true,
+        gameOver: game.isOver,
+        winner: game.winner
+     });
+    }else{
+       game.availableMoves.length ? game.isOver = false : game.isOver = true;
+    }
+  },
+
+  resetGameToInitialState : function(){
+    game.isOver = false; game.winner = null;
+    this.setState({
+        gameOn: false,
+        gameOver: false,
+        winner: {},
+        playerMe: {}
+    });
+  },
+
+  startOverPlay: function(){
+    if(game.winner){
+      game.winner.player.name === game.playerMe.name ? game.updateWinCount(game.playerMe) : game.updateWinCount(game.opponent);
+      game.winner = null;
+    }
+
+    game.over = false;
+    this.setState({
+        gameOn: true,
+        gameOver: false,
+        winner: {}
+    });
+  },
+
   onMePlay: function(key){
    var indexOfChoice = game.availableMoves.indexOf(key);
    if(game.on && !game.isOver && indexOfChoice !== -1){
      var move = game.play(game.playerMe, indexOfChoice);
      this.refs[move].children[0].innerHTML = game.playerMe.name;
 
+     this.updateGameStatus();
+
      /**Opponent react to my move*/
-     if(!game.isOver){
+     if(game.on && !game.isOver){
       this.opponentPlay();
+      this.updateGameStatus();
      }else{
-       //my last move ended the game.
-       //TODO: handle gameOver.
+       //gave is over or stopped
+       !game.on ? this.resetGameToInitialState() : game.isOver ? this.startOverPlay() : null;
      }
    }
   },
@@ -74,16 +125,17 @@ var TictacPanel = React.createClass({
 
   getInitialState: function(){
     return {
-      gameInfo: {
-        gameOn: false,
-        playerMe: {}
-      }
+      gameOn: false,
+      gameOver: false,
+      winner: {},
+      playerMe: {}
     }
   },
   render: function(){
     return (
       <div className="container-fluid col-md-12">
         {this.playerChoices()}
+        {this.gameWonBanner()}
         <div className="container-fluid col-md-12">
           <div className="container-fluid col-md-12">
             <div className="tictac-main">

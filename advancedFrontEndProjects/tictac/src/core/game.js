@@ -52,17 +52,19 @@ function Game() {
     }
   };
 
-  this.updateGameStatus = function () {
-    this.availableMoves.length ? this.isOver = false : this.isOver = true;
+  this.updateWinCount = function(player){
+    player.wins++;
   };
 
-  this.isWin = function (player) {
+  this.isWin = function (player, noDeclare) {
     for (var i = 0; i < this.possibleWinningMoves.length; i++) {
       if (_.difference(this.possibleWinningMoves[i], player.moves).length === 0) {
-        this.winner = {
-          player: player,
-          winmoves: this.possibleWinningMoves[i]
-        };
+        if(!noDeclare){
+          this.winner = {
+            player: player,
+            winmoves: this.possibleWinningMoves[i]
+          };
+        }
         return true;
       }
     }
@@ -74,14 +76,14 @@ function Game() {
 
     for (var i = 0; i < this.availableMoves.length; i++) {
       this.opponent.moves.push(this.availableMoves[i]);
-      if (this.isWin(this.opponent)) {
+      if (this.isWin(this.opponent, true)) {
         optimalMove = this.availableMoves[i];
         this.opponent.moves.pop(); break;
       }
       this.opponent.moves.pop();
 
       this.playerMe.moves.push(this.availableMoves[i]);
-      if (this.isWin(this.playerMe)) {
+      if (this.isWin(this.playerMe, true)) {
         optimalMove = this.availableMoves[i];
         this.playerMe.moves.pop(); break;
       }
@@ -98,9 +100,8 @@ function Game() {
   this.play = function (player, indexOfMove) {
     var move = this.availableMoves.splice(indexOfMove, 1)[0];
     player.moves.push(move);
-    console.log(player);
 
-    this.updateGameStatus();
+    // this.updateGameStatus();
     return move;
   };
 

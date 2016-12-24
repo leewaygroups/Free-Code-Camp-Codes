@@ -15,10 +15,8 @@ var TictacPanel = React.createClass({displayName: "TictacPanel",
       if(!game.on){
         game.setPlayers(choiceName);
         this.setState({
-          gameInfo: {
             gameOn: true,
             playerMe: game.playerMe
-          }
         });
       }
 
@@ -30,7 +28,7 @@ var TictacPanel = React.createClass({displayName: "TictacPanel",
   playerChoices: function(){
     if(game.on){
        React.createElement("div", {className: "col-md-4"}, 
-            "The fight is on! You're ", React.createElement("b", null, this.state.gameInfo.playerMe.name)
+            "The fight is on! You're ", React.createElement("b", null, this.state.playerMe.name)
         )
     }
 
@@ -49,18 +47,71 @@ var TictacPanel = React.createClass({displayName: "TictacPanel",
     );
   },
 
+  gameWonBanner: function(){
+    if(this.state.gameOver){
+      if(this.state.winner.player){
+        return (
+          React.createElement("div", null, "Game over: Winner is ", React.createElement("b", null, this.state.winner.player.name))
+        );
+      }else{
+          React.createElement("div", null, "Game over: Its a draw")
+      }
+    }
+  },
+
+  updateGameStatus: function () {
+    !game.isWin(game.playerMe) ? game.isWin(game.opponent) : null;
+    if(game.winner){
+     game.isOver = true;
+     this.setState({
+        gameOn: true,
+        gameOver: game.isOver,
+        winner: game.winner
+     });
+    }else{
+       game.availableMoves.length ? game.isOver = false : game.isOver = true;
+    }
+  },
+
+  resetGameToInitialState : function(){
+    game.isOver = false; game.winner = null;
+    this.setState({
+        gameOn: false,
+        gameOver: false,
+        winner: {},
+        playerMe: {}
+    });
+  },
+
+  startOverPlay: function(){
+    if(game.winner){
+      game.winner.player.name === game.playerMe.name ? game.updateWinCount(game.playerMe) : game.updateWinCount(game.opponent);
+      game.winner = null;
+    }
+
+    game.over = false;
+    this.setState({
+        gameOn: true,
+        gameOver: false,
+        winner: {}
+    });
+  },
+
   onMePlay: function(key){
    var indexOfChoice = game.availableMoves.indexOf(key);
    if(game.on && !game.isOver && indexOfChoice !== -1){
      var move = game.play(game.playerMe, indexOfChoice);
      this.refs[move].children[0].innerHTML = game.playerMe.name;
 
+     this.updateGameStatus();
+
      /**Opponent react to my move*/
-     if(!game.isOver){
+     if(game.on && !game.isOver){
       this.opponentPlay();
+      this.updateGameStatus();
      }else{
-       //my last move ended the game.
-       //TODO: handle gameOver.
+       //gave is over or stopped
+       !game.on ? this.resetGameToInitialState() : game.isOver ? this.startOverPlay() : null;
      }
    }
   },
@@ -75,16 +126,17 @@ var TictacPanel = React.createClass({displayName: "TictacPanel",
 
   getInitialState: function(){
     return {
-      gameInfo: {
-        gameOn: false,
-        playerMe: {}
-      }
+      gameOn: false,
+      gameOver: false,
+      winner: {},
+      playerMe: {}
     }
   },
   render: function(){
     return (
       React.createElement("div", {className: "container-fluid col-md-12"}, 
         this.playerChoices(), 
+        this.gameWonBanner(), 
         React.createElement("div", {className: "container-fluid col-md-12"}, 
           React.createElement("div", {className: "container-fluid col-md-12"}, 
             React.createElement("div", {className: "tictac-main"}, 
@@ -170,17 +222,19 @@ function Game() {
     }
   };
 
-  this.updateGameStatus = function () {
-    this.availableMoves.length ? this.isOver = false : this.isOver = true;
+  this.updateWinCount = function(player){
+    player.wins++;
   };
 
-  this.isWin = function (player) {
+  this.isWin = function (player, noDeclare) {
     for (var i = 0; i < this.possibleWinningMoves.length; i++) {
       if (_.difference(this.possibleWinningMoves[i], player.moves).length === 0) {
-        this.winner = {
-          player: player,
-          winmoves: this.possibleWinningMoves[i]
-        };
+        if(!noDeclare){
+          this.winner = {
+            player: player,
+            winmoves: this.possibleWinningMoves[i]
+          };
+        }
         return true;
       }
     }
@@ -192,14 +246,14 @@ function Game() {
 
     for (var i = 0; i < this.availableMoves.length; i++) {
       this.opponent.moves.push(this.availableMoves[i]);
-      if (this.isWin(this.opponent)) {
+      if (this.isWin(this.opponent, true)) {
         optimalMove = this.availableMoves[i];
         this.opponent.moves.pop(); break;
       }
       this.opponent.moves.pop();
 
       this.playerMe.moves.push(this.availableMoves[i]);
-      if (this.isWin(this.playerMe)) {
+      if (this.isWin(this.playerMe, true)) {
         optimalMove = this.availableMoves[i];
         this.playerMe.moves.pop(); break;
       }
@@ -216,9 +270,8 @@ function Game() {
   this.play = function (player, indexOfMove) {
     var move = this.availableMoves.splice(indexOfMove, 1)[0];
     player.moves.push(move);
-    console.log(player);
 
-    this.updateGameStatus();
+    // this.updateGameStatus();
     return move;
   };
 
