@@ -12,7 +12,7 @@ window._ =  require('lodash');
 var TictacPanel = React.createClass({displayName: "TictacPanel",
 
   makePlayerChoice: function(choiceName){
-      if(!game.on){
+      if(!this.state.gameOn){
         game.setPlayers(choiceName);
         this.setState({
             gameOn: true,
@@ -26,36 +26,53 @@ var TictacPanel = React.createClass({displayName: "TictacPanel",
   },
 
   playerChoices: function(){
-    if(game.on){
-       React.createElement("div", {className: "col-md-4"}, 
-            "The fight is on! You're ", React.createElement("b", null, this.state.playerMe.name)
-        )
+    if(this.state.gameOn){
+      return(
+          React.createElement("div", {className: "container-fluid col-md-12"}, 
+            React.createElement("div", {className: "infoBoard-container"}, 
+              React.createElement("div", {className: "col-md-8 col-md-offset-2 infoBoard"}, 
+                 React.createElement("p", {className: "fight-on"}, "The fight is on! You're ", React.createElement("b", null, this.state.playerMe.name)), 
+                  this.gameWonBanner()
+              )
+            )
+          )
+      );
     }
 
     return (
       React.createElement("div", {className: "container-fluid col-md-12", ref: "infoBoard"}, 
-        React.createElement("div", {ref: "choices"}, 
-          React.createElement("div", {className: "col-md-4"}, 
-              "Who would you like to play as ", React.createElement("b", null, "Player X"), " or ", React.createElement("b", null, "Player O"), " ?"
-          ), 
-          React.createElement("div", {className: "col-md-8"}, 
-            React.createElement("a", {className: "btn btn-info col-md-2", onClick: this.makePlayerChoice.bind(null, 'X')}, React.createElement("b", null, "X")), 
-            React.createElement("a", {className: "btn btn-info col-md-2 col-md-offset-1", onClick: this.makePlayerChoice.bind(null, 'O')}, React.createElement("b", null, "O"))
+        React.createElement("div", {className: "infoBoard-container"}, 
+            React.createElement("div", {ref: "choices", className: "col-md-8 col-md-offset-2 infoBoard"}, 
+              React.createElement("div", {className: "col-md-4"}, 
+                  "Who are you palying as?"
+              ), 
+              React.createElement("div", {className: "col-md-8"}, 
+                React.createElement("a", {className: "btn btn-info col-md-3", onClick: this.makePlayerChoice.bind(null, 'X')}, React.createElement("b", null, "Player X")), 
+                React.createElement("a", {className: "btn btn-info col-md-3 col-md-offset-1", onClick: this.makePlayerChoice.bind(null, 'O')}, React.createElement("b", null, "Player O"))
+              )
+            )
           )
-        )
       )
     );
   },
 
   gameWonBanner: function(){
     if(this.state.gameOver){
+      var childElement;
       if(this.state.winner.player){
-        return (
-          React.createElement("div", null, "Game over: Winner is ", React.createElement("b", null, this.state.winner.player.name))
-        );
+         childElement = React.createElement("div", {className: "info"}, "Game over: ", React.createElement("b", null, "player \"", this.state.winner.player.name), "\" won");
       }else{
-          React.createElement("div", null, "Game over: Its a draw")
+         childElement = React.createElement("div", {className: "info"}, "Game over: Its a draw");
       }
+      return (
+        React.createElement("div", {className: "winner-draw"}, 
+          childElement, 
+          React.createElement("div", {className: "winner-draw-btn-container"}, 
+            React.createElement("a", {className: "btn btn-info win-draw-btn", onClick: this.startOverPlay}, "New round"), 
+            React.createElement("a", {className: "btn btn-info", onClick: this.resetGameToInitialState}, "Stop game")
+          )
+        )
+      );
     }
   },
 
@@ -73,8 +90,18 @@ var TictacPanel = React.createClass({displayName: "TictacPanel",
     }
   },
 
+  clearBoard : function(){
+    for (var i = 0; i < game.allBoardMoves.length; i++) {
+         this.refs[game.allBoardMoves[i]].children[0].innerHTML = null;
+         game.availableMoves.push(game.allBoardMoves[i]);
+    }
+  },
+
   resetGameToInitialState : function(){
     game.isOver = false; game.winner = null;
+    game.playerMe.reset(); game.opponent.reset();
+    this.clearBoard();
+
     this.setState({
         gameOn: false,
         gameOver: false,
@@ -90,6 +117,9 @@ var TictacPanel = React.createClass({displayName: "TictacPanel",
     }
 
     game.over = false;
+    game.playerMe.reset(); game.opponent.reset();
+    this.clearBoard();
+
     this.setState({
         gameOn: true,
         gameOver: false,
@@ -99,7 +129,7 @@ var TictacPanel = React.createClass({displayName: "TictacPanel",
 
   onMePlay: function(key){
    var indexOfChoice = game.availableMoves.indexOf(key);
-   if(game.on && !game.isOver && indexOfChoice !== -1){
+   if(this.state.gameOn && !this.state.gameOver && indexOfChoice !== -1){
      var move = game.play(game.playerMe, indexOfChoice);
      this.refs[move].children[0].innerHTML = game.playerMe.name;
 
@@ -109,9 +139,6 @@ var TictacPanel = React.createClass({displayName: "TictacPanel",
      if(game.on && !game.isOver){
       this.opponentPlay();
       this.updateGameStatus();
-     }else{
-       //gave is over or stopped
-       !game.on ? this.resetGameToInitialState() : game.isOver ? this.startOverPlay() : null;
      }
    }
   },
@@ -136,7 +163,6 @@ var TictacPanel = React.createClass({displayName: "TictacPanel",
     return (
       React.createElement("div", {className: "container-fluid col-md-12"}, 
         this.playerChoices(), 
-        this.gameWonBanner(), 
         React.createElement("div", {className: "container-fluid col-md-12"}, 
           React.createElement("div", {className: "container-fluid col-md-12"}, 
             React.createElement("div", {className: "tictac-main"}, 
@@ -172,7 +198,11 @@ var $ = require("jquery");
 
 function Player(name) {
   this.name = name,
+  this.moves = [];
+  this.reset = function(){
     this.moves = [];
+    this.wins = 0;
+  }
 }
 
 function minimax() {
@@ -181,6 +211,7 @@ function minimax() {
 
 function Game() {
   this.availableMoves = ['11', '12', '13', '21', '22', '23', '31', '32', '33'];
+  this.allBoardMoves = ['11', '12', '13', '21', '22', '23', '31', '32', '33'];
   this.possibleWinningMoves = [
     ['11', '12', '13'],
     ['21', '22', '23'],

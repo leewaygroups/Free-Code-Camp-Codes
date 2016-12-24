@@ -2,7 +2,11 @@ var $ = require("jquery");
 
 function Player(name) {
   this.name = name,
+  this.moves = [];
+  this.reset = function(){
     this.moves = [];
+    this.wins = 0;
+  }
 }
 
 function minimax() {
@@ -11,6 +15,7 @@ function minimax() {
 
 function Game() {
   this.availableMoves = ['11', '12', '13', '21', '22', '23', '31', '32', '33'];
+  this.allBoardMoves = ['11', '12', '13', '21', '22', '23', '31', '32', '33'];
   this.possibleWinningMoves = [
     ['11', '12', '13'],
     ['21', '22', '23'],

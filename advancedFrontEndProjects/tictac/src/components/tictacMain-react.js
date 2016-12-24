@@ -11,7 +11,7 @@ window._ =  require('lodash');
 var TictacPanel = React.createClass({
 
   makePlayerChoice: function(choiceName){
-      if(!game.on){
+      if(!this.state.gameOn){
         game.setPlayers(choiceName);
         this.setState({
             gameOn: true,
@@ -25,36 +25,53 @@ var TictacPanel = React.createClass({
   },
 
   playerChoices: function(){
-    if(game.on){
-       <div className="col-md-4">
-            The fight is on! You're <b>{this.state.playerMe.name}</b>
-        </div>
+    if(this.state.gameOn){
+      return(
+          <div className="container-fluid col-md-12">
+            <div className="infoBoard-container">
+              <div className="col-md-8 col-md-offset-2 infoBoard">
+                 <p className="fight-on">The fight is on! You're <b>{this.state.playerMe.name}</b></p>
+                  {this.gameWonBanner()}
+              </div>
+            </div>
+          </div>
+      );
     }
 
     return (
       <div className="container-fluid col-md-12" ref="infoBoard">
-        <div ref="choices">
-          <div className="col-md-4">
-              Who would you like to play as <b>Player X</b> or <b>Player O</b> ?
+        <div className="infoBoard-container">
+            <div ref="choices" className="col-md-8 col-md-offset-2 infoBoard">
+              <div className="col-md-4">
+                  Who are you palying as?
+              </div>
+              <div className="col-md-8">
+                <a className="btn btn-info col-md-3" onClick={this.makePlayerChoice.bind(null, 'X')}><b>Player X</b></a>
+                <a className="btn btn-info col-md-3 col-md-offset-1" onClick={this.makePlayerChoice.bind(null, 'O')}><b>Player O</b></a>
+              </div>
+            </div>
           </div>
-          <div className="col-md-8">
-            <a className="btn btn-info col-md-2" onClick={this.makePlayerChoice.bind(null, 'X')}><b>X</b></a>
-            <a className="btn btn-info col-md-2 col-md-offset-1" onClick={this.makePlayerChoice.bind(null, 'O')}><b>O</b></a>
-          </div>
-        </div>
       </div>
     );
   },
 
   gameWonBanner: function(){
     if(this.state.gameOver){
+      var childElement;
       if(this.state.winner.player){
-        return (
-          <div>Game over: Winner is <b>{this.state.winner.player.name}</b></div>
-        );
+         childElement = <div className="info">Game over: <b>player "{this.state.winner.player.name}</b>" won</div>;
       }else{
-          <div>Game over: Its a draw</div>
+         childElement = <div className="info">Game over: Its a draw</div>;
       }
+      return (
+        <div className="winner-draw">
+          {childElement}
+          <div className="winner-draw-btn-container">
+            <a className="btn btn-info win-draw-btn" onClick={this.startOverPlay}>New round</a>
+            <a className="btn btn-info" onClick={this.resetGameToInitialState}>Stop game</a>
+          </div>
+        </div>
+      );
     }
   },
 
@@ -72,8 +89,18 @@ var TictacPanel = React.createClass({
     }
   },
 
+  clearBoard : function(){
+    for (var i = 0; i < game.allBoardMoves.length; i++) {
+         this.refs[game.allBoardMoves[i]].children[0].innerHTML = null;
+         game.availableMoves.push(game.allBoardMoves[i]);
+    }
+  },
+
   resetGameToInitialState : function(){
     game.isOver = false; game.winner = null;
+    game.playerMe.reset(); game.opponent.reset();
+    this.clearBoard();
+
     this.setState({
         gameOn: false,
         gameOver: false,
@@ -89,6 +116,9 @@ var TictacPanel = React.createClass({
     }
 
     game.over = false;
+    game.playerMe.reset(); game.opponent.reset();
+    this.clearBoard();
+
     this.setState({
         gameOn: true,
         gameOver: false,
@@ -98,7 +128,7 @@ var TictacPanel = React.createClass({
 
   onMePlay: function(key){
    var indexOfChoice = game.availableMoves.indexOf(key);
-   if(game.on && !game.isOver && indexOfChoice !== -1){
+   if(this.state.gameOn && !this.state.gameOver && indexOfChoice !== -1){
      var move = game.play(game.playerMe, indexOfChoice);
      this.refs[move].children[0].innerHTML = game.playerMe.name;
 
@@ -108,9 +138,6 @@ var TictacPanel = React.createClass({
      if(game.on && !game.isOver){
       this.opponentPlay();
       this.updateGameStatus();
-     }else{
-       //gave is over or stopped
-       !game.on ? this.resetGameToInitialState() : game.isOver ? this.startOverPlay() : null;
      }
    }
   },
@@ -135,7 +162,6 @@ var TictacPanel = React.createClass({
     return (
       <div className="container-fluid col-md-12">
         {this.playerChoices()}
-        {this.gameWonBanner()}
         <div className="container-fluid col-md-12">
           <div className="container-fluid col-md-12">
             <div className="tictac-main">
